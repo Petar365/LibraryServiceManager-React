@@ -71,4 +71,9 @@ To test the backend use Postman
             }
     
 
-    
+    For Book Cover img set use :
+    POST http://localhost:8081/books/{id}/upload-cover
+
+        With body from-data
+            Key         Value
+            file file   (The img)

@@ -24,7 +24,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -46,6 +46,10 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<Response> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
+        if (loginRequest == null || loginRequest.getEmail() == null || loginRequest.getPassword() == null) {
+            return ResponseEntity.badRequest().body(getResponse(request, emptyMap(), "Invalid request", HttpStatus.BAD_REQUEST));
+        }
+
         var authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -54,8 +58,7 @@ public class UserController {
         jwtService.addCookie(response, user, com.example.libraryservicemanager.model.enumeration.TokenType.ACCESS);
         jwtService.addCookie(response, user, com.example.libraryservicemanager.model.enumeration.TokenType.REFRESH);
 
-        return ResponseEntity.ok().body(getResponse(request, emptyMap(), "Login successful", OK));
-
+        return ResponseEntity.ok().body(getResponse(request, emptyMap(), "Login successful", HttpStatus.OK));
     }
 
     @PostMapping("/logout")

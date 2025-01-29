@@ -59,6 +59,9 @@ spring:
             required: true
     verify:
       host: ${VERIFY_EMAIL_HOST}
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 server:
   port: ${CONTAINER_PORT:8080}
   error:

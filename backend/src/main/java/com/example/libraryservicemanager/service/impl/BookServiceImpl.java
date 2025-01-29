@@ -6,7 +6,9 @@ import com.example.libraryservicemanager.repository.BookRepository;
 import com.example.libraryservicemanager.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -52,5 +54,14 @@ public class BookServiceImpl implements BookService {
     public void deleteBook(Long id) {
         Book book = getBookById(id);
         bookRepository.delete(book);
+    }
+
+    @Override
+    public void saveCoverImage(Long bookId, MultipartFile file) throws IOException {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found with ID: " + bookId));
+
+        book.setCoverImage(file.getBytes());
+        bookRepository.save(book);
     }
 }
